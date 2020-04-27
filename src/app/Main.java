@@ -17,7 +17,8 @@ public class Main {
 
         try {
 
-            addTextToImage2();
+            joinImagesWithDate();
+            // addTextToImage2();
             // joinImages2();
 
         } catch(Exception e) {
@@ -25,35 +26,45 @@ public class Main {
         }
     }
 
+    public static void joinImagesWithDate() {
+        PngFileWriter2 writer = new PngFileWriter2();
+        List<String> inputFileNameList = new ArrayList<String>();
+        inputFileNameList.add("assets/stamp.png");
+        inputFileNameList.add("assets/sign.png");
+        writer.append(inputFileNameList, "joined3.png", false, true);
+    }
+
     public static void addTextToImage2() {
-        SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            Date now = new Date();
+        SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
+        Date now = new Date();
 
-            File origFile = new File("assets/stamp.png");
-            ImageIcon icon = new ImageIcon(origFile.getPath());
+        File origFile = new File("assets/stamp.png");
+        ImageIcon icon = new ImageIcon(origFile.getPath());
 
-            // create BufferedImage object of same width and height as of original image
-            BufferedImage bufferedImage = new BufferedImage(icon.getIconWidth(),
-                        icon.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
+        // create BufferedImage object of same width and height as of original image
+        BufferedImage bufferedImage = new BufferedImage(icon.getIconWidth(),
+                    icon.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
 
-            // create graphics object and add original image to it
-            Graphics graphics = bufferedImage.getGraphics();
-            graphics.drawImage(icon.getImage(), 0, 0, null);
+        // create graphics object and add original image to it
+        Graphics graphics = bufferedImage.getGraphics();
+        graphics.drawImage(icon.getImage(), 0, 0, null);
 
-            // set font for the watermark text
-            graphics.setFont(new Font("Arial", Font.BOLD, 20));
-            String watermark =  sdfDate.format(now);
+        // set font for the watermark text
+        graphics.setFont(new Font("Arial", Font.BOLD, 20));
+        graphics.setColor(Color.BLACK);
+        String watermark =  sdfDate.format(now);
 
-            // add the watermark text
-            graphics.drawString(watermark, (icon.getIconWidth()*50)/100, (icon.getIconHeight()*90)/100);
-            graphics.dispose();
+        // add the watermark text
+        // graphics.drawString(watermark, (icon.getIconWidth()*50)/100, (icon.getIconHeight()*90)/100);
+        graphics.drawString(watermark, (icon.getIconWidth()*2)/100, (icon.getIconHeight()*97)/100);
+        graphics.dispose();
 
-            File newFile = new File("test2.png");
-            try {
-                  ImageIO.write(bufferedImage, "png", newFile);
-            } catch (IOException e) {
-                  e.printStackTrace();
-            }
+        File newFile = new File("test2.png");
+        try {
+                ImageIO.write(bufferedImage, "png", newFile);
+        } catch (IOException e) {
+                e.printStackTrace();
+        }
     }
 
     public static void addTextToImage() throws Exception {
