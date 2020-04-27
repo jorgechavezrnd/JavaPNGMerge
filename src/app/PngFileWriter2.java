@@ -5,19 +5,15 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Transparency;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
  
-import javax.imageio.ImageIO;
- 
 public class PngFileWriter2 {
  
-    public void append(List<String> inputFileNameList, String outputFileName, boolean isX, boolean withDate) {
-        if (inputFileNameList == null || inputFileNameList.size() == 0) {
-            return;
+    public BufferedImage append(List<BufferedImage> inputFileBufList, boolean isX) throws Exception {
+        if (inputFileBufList == null || inputFileBufList.size() == 0) {
+            return null;
         }
  
         try {
@@ -25,14 +21,14 @@ public class PngFileWriter2 {
             BufferedImage outputImg = null;
             int outputImgW = 0;
             int outputImgH = 0;
-            for (String pngFileName : inputFileNameList) {
+            for (BufferedImage pngFileBuf : inputFileBufList) {
                 if (isFirstPng) {
                     isFirstPng = false;
-                    outputImg = ImageIO.read(new File(pngFileName));
+                    outputImg = pngFileBuf;
                     outputImgW = outputImg.getWidth();
                     outputImgH = outputImg.getHeight();
                 } else {
-                    BufferedImage appendImg = ImageIO.read(new File(pngFileName));
+                    BufferedImage appendImg = pngFileBuf;
                     int appendImgW = appendImg.getWidth();
                     int appendImgH = appendImg.getHeight();
  
@@ -59,35 +55,27 @@ public class PngFileWriter2 {
                     } else {
                         g2d.drawImage(appendImg, 0, oldImgH, appendImgW, appendImgH, null);
                     }
-
-                    if (withDate) {
-                        addDate(g2d, outputImgW, outputImgH);
-                    }
                     
                     g2d.dispose();
                     outputImg = imageNew;
                 }
             }
-            writeImageLocal(outputFileName, outputImg);
+
+            return outputImg;
         } catch (Exception e) {
             e.printStackTrace();
+            throw e;
         }
     }
  
-    private void writeImageLocal(String fileName, BufferedImage image) {
-        if (fileName != null && image != null) {
-            try {
-                File file = new File(fileName);
-                ImageIO.write(image, "png", file);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private void addDate(Graphics2D g2d, int outputImgW, int outputImgH) {
+    public BufferedImage addDate(BufferedImage inputBuf) {
         SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
         Date now = new Date();
+
+        int bufWidth = inputBuf.getWidth();
+        int bufHeight = inputBuf.getHeight();
+
+        Graphics2D g2d = inputBuf.createGraphics();
 
         // set font for the text
         g2d.setFont(new Font("Arial", Font.BOLD, 35));
@@ -95,6 +83,9 @@ public class PngFileWriter2 {
         String dateText = sdfDate.format(now);
 
         // add the text
-        g2d.drawString(dateText, (outputImgW*2)/100, (outputImgH*97)/100);
+        g2d.drawString(dateText, (bufWidth*2)/100, (bufHeight*97)/100);
+        g2d.dispose();
+
+        return inputBuf;
     }
 }

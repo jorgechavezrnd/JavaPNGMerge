@@ -17,6 +17,7 @@ public class Main {
 
         try {
 
+            // addTextToImage3();
             joinImagesWithDate();
             // addTextToImage2();
             // joinImages2();
@@ -26,12 +27,46 @@ public class Main {
         }
     }
 
-    public static void joinImagesWithDate() {
+    public static void addTextToImage3() throws Exception {
         PngFileWriter2 writer = new PngFileWriter2();
-        List<String> inputFileNameList = new ArrayList<String>();
-        inputFileNameList.add("assets/stamp.png");
-        inputFileNameList.add("assets/sign.png");
-        writer.append(inputFileNameList, "joined3.png", false, true);
+
+        BufferedImage stampBuf = ImageIO.read(new File("assets/stamp.png"));
+
+        List<BufferedImage> inputFileBufList = new ArrayList<BufferedImage>();
+
+        inputFileBufList.add(stampBuf);
+
+        BufferedImage outputBuf = writer.append(inputFileBufList, false);
+        outputBuf = writer.addDate(outputBuf);
+
+        File outputFile = new File("withDate.png");
+        try {
+                ImageIO.write(outputBuf, "png", outputFile);
+        } catch (IOException e) {
+                e.printStackTrace();
+        }
+    }
+
+    public static void joinImagesWithDate() throws Exception {
+        PngFileWriter2 writer = new PngFileWriter2();
+
+        BufferedImage stampBuf = ImageIO.read(new File("assets/stamp.png"));
+        BufferedImage signBuf = ImageIO.read(new File("assets/sign.png"));
+
+        List<BufferedImage> inputFileBufList = new ArrayList<BufferedImage>();
+
+        inputFileBufList.add(stampBuf);
+        inputFileBufList.add(signBuf);
+
+        BufferedImage outputBuf = writer.append(inputFileBufList, false);
+        outputBuf = writer.addDate(outputBuf);
+
+        File outputFile = new File("withSignAndDate.png");
+        try {
+                ImageIO.write(outputBuf, "png", outputFile);
+        } catch (IOException e) {
+                e.printStackTrace();
+        }
     }
 
     public static void addTextToImage2() {
