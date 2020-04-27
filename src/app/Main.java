@@ -17,17 +17,16 @@ public class Main {
 
         try {
 
-            // addTextToImage3();
-            joinImagesWithDate();
-            // addTextToImage2();
-            // joinImages2();
+            withDate();
+            withSignature();
+            withSignatureAndDate();
 
         } catch(Exception e) {
             System.out.println("Error: " + e.getMessage());
         }
     }
 
-    public static void addTextToImage3() throws Exception {
+    public static void withDate() throws Exception {
         PngFileWriter2 writer = new PngFileWriter2();
 
         BufferedImage stampBuf = ImageIO.read(new File("assets/stamp.png"));
@@ -47,7 +46,28 @@ public class Main {
         }
     }
 
-    public static void joinImagesWithDate() throws Exception {
+    public static void withSignature() throws Exception {
+        PngFileWriter2 writer = new PngFileWriter2();
+
+        BufferedImage stampBuf = ImageIO.read(new File("assets/stamp.png"));
+        BufferedImage signBuf = ImageIO.read(new File("assets/sign.png"));
+
+        List<BufferedImage> inputFileBufList = new ArrayList<BufferedImage>();
+
+        inputFileBufList.add(stampBuf);
+        inputFileBufList.add(signBuf);
+
+        BufferedImage outputBuf = writer.append(inputFileBufList, false);
+
+        File outputFile = new File("withSign.png");
+        try {
+                ImageIO.write(outputBuf, "png", outputFile);
+        } catch (IOException e) {
+                e.printStackTrace();
+        }
+    }
+
+    public static void withSignatureAndDate() throws Exception {
         PngFileWriter2 writer = new PngFileWriter2();
 
         BufferedImage stampBuf = ImageIO.read(new File("assets/stamp.png"));
